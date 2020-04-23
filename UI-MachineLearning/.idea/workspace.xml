@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9513571a-f35a-46bf-88b9-4d7956c7af15" name="Default Changelist" comment="" />
+    <list default="true" id="9513571a-f35a-46bf-88b9-4d7956c7af15" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../DigitalImageProcessing/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DigitalImageProcessing/myoperator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DigitalImageProcessing/units.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/widgets/bayesWidget.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/UI-MachineLearning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/UI-MachineLearning.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ml_algorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/ml_algorithm.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,10 +34,11 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="D:/Applicaion/Anaconda" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\UI-MachineLearning\widgets" />
       <recent name="D:\Projects\UI-MachineLearning\images" />
     </key>
   </component>
@@ -44,7 +54,29 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.bayesWidget">
+    <configuration name="bayesWidget" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="UI-MachineLearning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/widgets" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/widgets/bayesWidget.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="UI-MachineLearning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -69,6 +101,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.bayesWidget" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -90,7 +123,15 @@
       <workItem from="1585211885711" duration="645000" />
       <workItem from="1585212686367" duration="120000" />
       <workItem from="1585212847859" duration="1327000" />
-      <workItem from="1585227917446" duration="7375000" />
+      <workItem from="1585227917446" duration="8008000" />
+      <workItem from="1585534869282" duration="541000" />
+      <workItem from="1585535515205" duration="66000" />
+      <workItem from="1586914786976" duration="687000" />
+      <workItem from="1586915528571" duration="15513000" />
+      <workItem from="1587518231208" duration="5337000" />
+      <workItem from="1587546122964" duration="462000" />
+      <workItem from="1587546673650" duration="670000" />
+      <workItem from="1587547393184" duration="24086000" />
     </task>
     <servers />
   </component>
@@ -111,6 +152,7 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/UI_MachineLearning$main.coverage" NAME="main Coverage Results" MODIFIED="1585237979691" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/UI_MachineLearning$main.coverage" NAME="main Coverage Results" MODIFIED="1585535539632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/UI_MachineLearning$bayesWidget.coverage" NAME="bayesWidget Coverage Results" MODIFIED="1587612404028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/widgets" />
   </component>
 </project>

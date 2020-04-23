@@ -109,7 +109,7 @@ class MainWidget(tk.Frame):
             # 显示在界面上
             self.canvas_r.figure=fig
             self.canvas_r.draw()
-            
+
 
 
 class MainMenu(tk.Menu):
