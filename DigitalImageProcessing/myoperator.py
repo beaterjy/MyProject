@@ -97,6 +97,19 @@ def color2gray(X):
         raise Exception("Can't transfer color to gray.")
 
 
+def gray2bin(X, threshold=_L_DEFAULT // 2):
+    """灰度值二值化"""
+    Y = X.copy()
+    Y[Y < threshold] = 0
+    Y[Y >= threshold] = 1
+    return Y
+
+def bin2gray(X, L=_L_DEFAULT):
+    """二值图转成灰度值"""
+    Y = X * (L-1)
+    return Y
+
+
 def get_hist(X, L=_L_DEFAULT):
     """获取直方图列表"""
     if len(X.shape) > 2:
@@ -203,3 +216,58 @@ def _is_dimode(hist):
     return True if nPeak == 2 else False
 
 
+
+def dilation(X, kernel_size=3):
+    """简单膨胀操作"""
+    return _dilation_or_frosion(X, way='Dilation', kernel_size=kernel_size)
+
+def frosion(X, kernel_size=3):
+    """简单腐蚀操作"""
+    return _dilation_or_frosion(X, way='Frosion', kernel_size=kernel_size)
+
+
+def _dilation_or_frosion(X, way=None, kernel_size=3):
+    """简单的膨胀或者腐蚀操作，没有自定义模板功能"""
+    kernel_size = int(kernel_size)
+    Y = X.copy()
+    if way == None:
+        return Y
+
+    if X.max() != 1 or X.min() != 0:
+        raise ValueError('Image must be two-valued.')
+
+    if kernel_size % 2 == 0 or kernel_size < 1:
+        raise ValueError('Image must be odd or kernel size must bigger than 1.')
+
+    gap = kernel_size // 2
+    for i in range(gap, X.shape[0]-gap+1):
+        for j in range(gap, X.shape[1]-gap+1):
+            tmp = X[i-gap:i+gap+1, j-gap:j+gap+1]
+            if way == 'Dilation':
+                val = np.max(tmp)
+            elif way == 'Frosion':
+                val = np.min(tmp)
+            else:
+                val = X[i,j]        # TODO: 可以补充模板
+            Y[i,j] = val
+    return Y
+
+def opening(X):
+    """
+    开操作， opening(A, B) = dilation(frosion(A, B), B)
+    """
+    return dilation(frosion(X))
+
+
+def closing(X):
+    """
+    闭操作，closing(A, B) = frosion(dilation(A, B), B)
+    """
+    return frosion(dilation(X))
+
+
+def edge_extraction(X):
+    """
+    边界提取， beta(A) = A - frosion(A, B)
+    """
+    return X - frosion(X)

@@ -6,6 +6,7 @@ from ml_algorithm import *
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from bayesWidget import BayesWidget
 
 
 
@@ -137,8 +138,11 @@ class MainMenu(tk.Menu):
 
 
 if __name__ == '__main__':
+    # window = tk.Tk()
+    # root = MainWidget().pack()
+    # menu = MainMenu()
+    # window.config(menu=menu)
+    # window.mainloop()
     window = tk.Tk()
-    root = MainWidget().pack()
-    menu = MainMenu()
-    window.config(menu=menu)
+    root = BayesWidget().pack()
     window.mainloop()

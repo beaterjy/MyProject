@@ -109,21 +109,44 @@ class MainWidget(tk.Frame):
         # X = (np.array(cv2.cvtColor(self._valImage, cv2.COLOR_BGRA2GRAY)))  # 转换成灰度值
         X = myoperator.color2gray(self._valImage)       # 转换成灰度值
 
-        if _operator == 'Prewitt':
+        if _operator == 'Prewitt':          # Prewitt算子
             self._valUpdate = myoperator.prewitt(X)
-        elif _operator == 'Sobel':
+        elif _operator == 'Sobel':          # Sobel算子
             self._valUpdate = myoperator.sobel(X)
-        elif _operator == 'Laplace':
+        elif _operator == 'Laplace':        # Laplace算子
             self._valUpdate = myoperator.laplace(X)
-        elif _operator == 'Gray':
+        elif _operator == 'Gray':           # 转成灰度值
             self._valUpdate = X
-        elif _operator == 'HistEqual':
+        elif _operator == 'HistEqual':      # 直方图均衡化
             self._valUpdate = myoperator.hist_equal(X)
-        elif _operator == 'BimodeMean':
+        elif _operator == 'Gray2Bin':       # 二值化
+            X2 = myoperator.gray2bin(X)
+            self._valUpdate = myoperator.bin2gray(X2)
+        elif _operator == 'BimodeMean':     # 双峰法平均
             self._valUpdate = myoperator.bimode_cut(X, threshold_type='mean')
-        elif _operator == 'BimodeLow':
+        elif _operator == 'BimodeLow':      # 双峰法最小
             self._valUpdate = myoperator.bimode_cut(X, threshold_type='low')
-        else:                   # 不转换 或者 使用没定义算子
+        elif _operator == 'Dilation':       # 膨胀
+            X2 = myoperator.gray2bin(X)
+            print('Gray to Bin --> Bin to Gray')
+            self._valUpdate = myoperator.bin2gray(myoperator.dilation(X2))
+        elif _operator == 'Frosion':        # 腐蚀
+            X2 = myoperator.gray2bin(X)
+            print('Gray to Bin --> Bin to Gray')
+            self._valUpdate = myoperator.bin2gray(myoperator.frosion(X2))
+        elif _operator == 'Opening':        # 开操作
+            X2 = myoperator.gray2bin(X)
+            print('Gray to Bin --> Bin to Gray')
+            self._valUpdate = myoperator.bin2gray(myoperator.opening(X2))
+        elif _operator == 'Closing':        # 闭操作
+            X2 = myoperator.gray2bin(X)
+            print('Gray to Bin --> Bin to Gray')
+            self._valUpdate = myoperator.bin2gray(myoperator.closing(X2))
+        elif _operator == 'EdgeExtraction': # 边界提取
+            X2 = myoperator.gray2bin(X)
+            print('Gray to Bin --> Bin to Gray')
+            self._valUpdate = myoperator.bin2gray(myoperator.edge_extraction(X2))
+        else:                               # 不转换 或者 使用没定义算子
             self._valUpdate = X
 
         # 如果考虑滑动条阈值, 二值图像
@@ -164,6 +187,8 @@ class MainWidget(tk.Frame):
         imageSize = (self._imageSize[0] // 100, self._imageSize[1] // 100)
         fig, axe = plt.subplots(figsize=imageSize)       # 默认返回一个子图
         axe.plot(range(len(hist)), hist)
+        axe.set_xlabel('Gray value')
+        axe.set_ylabel('Proportion')
         fig.savefig(filename, dpi=100)
         self._newImage.config(file=filename)
 
