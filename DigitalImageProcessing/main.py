@@ -26,6 +26,7 @@ class MyWindow():
         menuEdge = tk.Menu(self.menu, tearoff=True)
         menuCut = tk.Menu(self.menu, tearoff=True)
         menuBin= tk.Menu(self.menu, tearoff=True)
+        menuExpr = tk.Menu(self.menu, tearoff=True)
 
         # 绑定菜单名字
         self.menu.add_cascade(label='图像文件操作', menu=menuFile)
@@ -33,6 +34,7 @@ class MyWindow():
         self.menu.add_cascade(label='图像边缘检测', menu=menuEdge)
         self.menu.add_cascade(label='图像阈值分割', menu=menuCut)
         self.menu.add_cascade(label='图像形态学', menu=menuBin)
+        self.menu.add_cascade(label='图像表示描述', menu=menuExpr)
 
         # 添加菜单内容
         # 文件操作
@@ -63,6 +65,8 @@ class MyWindow():
         menuBin.add_command(label='闭操作', command=lambda : self._update('Closing'))
         menuBin.add_command(label='击中变换', command=None)
         menuBin.add_command(label='边界提取', command=lambda : self._update('EdgeExtraction'))
+        # 表示描述
+        menuExpr.add_command(label='区域hu矩', command=self._show_humoments)
 
 
     def _update(self, _operator):
@@ -73,6 +77,11 @@ class MyWindow():
     def _show_hist(self):
         """展示直方图"""
         self.widget.show_hist()
+
+    def _show_humoments(self):
+        """展示Hu矩直方图"""
+        self.widget.show_humoments()
+
 
 
 if __name__ == '__main__':

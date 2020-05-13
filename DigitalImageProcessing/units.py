@@ -19,7 +19,7 @@ class MainWidget(tk.Frame):
         self._imageSize = (300, 300)
         self._valImage = None
         self._valUpdate = None
-        self._nowOperator = None    # 当前使用的算子为None，即原图的灰度值
+        self._nowOperator = None  # 当前使用的算子为None，即原图的灰度值
         self._valS = tk.IntVar()
         self._image = tk.PhotoImage(file='image/temp2.png')  # 初始化图片
         self._newImage = tk.PhotoImage(file='image/temp2.png')  # 初始化图片
@@ -105,60 +105,59 @@ class MainWidget(tk.Frame):
         :param _thVal: 阈值，两值化分割
         :return:
         """
-        self._nowOperator = _operator       # 保存当前使用的算子
+        self._nowOperator = _operator  # 保存当前使用的算子
         # X = (np.array(cv2.cvtColor(self._valImage, cv2.COLOR_BGRA2GRAY)))  # 转换成灰度值
-        X = myoperator.color2gray(self._valImage)       # 转换成灰度值
+        X = myoperator.color2gray(self._valImage)  # 转换成灰度值
 
-        if _operator == 'Prewitt':          # Prewitt算子
+        if _operator == 'Prewitt':  # Prewitt算子
             self._valUpdate = myoperator.prewitt(X)
-        elif _operator == 'Sobel':          # Sobel算子
+        elif _operator == 'Sobel':  # Sobel算子
             self._valUpdate = myoperator.sobel(X)
-        elif _operator == 'Laplace':        # Laplace算子
+        elif _operator == 'Laplace':  # Laplace算子
             self._valUpdate = myoperator.laplace(X)
-        elif _operator == 'Gray':           # 转成灰度值
+        elif _operator == 'Gray':  # 转成灰度值
             self._valUpdate = X
-        elif _operator == 'HistEqual':      # 直方图均衡化
+        elif _operator == 'HistEqual':  # 直方图均衡化
             self._valUpdate = myoperator.hist_equal(X)
-        elif _operator == 'Gray2Bin':       # 二值化
+        elif _operator == 'Gray2Bin':  # 二值化
             X2 = myoperator.gray2bin(X)
             self._valUpdate = myoperator.bin2gray(X2)
-        elif _operator == 'BimodeMean':     # 双峰法平均
+        elif _operator == 'BimodeMean':  # 双峰法平均
             self._valUpdate = myoperator.bimode_cut(X, threshold_type='mean')
-        elif _operator == 'BimodeLow':      # 双峰法最小
+        elif _operator == 'BimodeLow':  # 双峰法最小
             self._valUpdate = myoperator.bimode_cut(X, threshold_type='low')
-        elif _operator == 'Dilation':       # 膨胀
+        elif _operator == 'Dilation':  # 膨胀
             X2 = myoperator.gray2bin(X)
             print('Gray to Bin --> Bin to Gray')
             self._valUpdate = myoperator.bin2gray(myoperator.dilation(X2))
-        elif _operator == 'Frosion':        # 腐蚀
+        elif _operator == 'Frosion':  # 腐蚀
             X2 = myoperator.gray2bin(X)
             print('Gray to Bin --> Bin to Gray')
             self._valUpdate = myoperator.bin2gray(myoperator.frosion(X2))
-        elif _operator == 'Opening':        # 开操作
+        elif _operator == 'Opening':  # 开操作
             X2 = myoperator.gray2bin(X)
             print('Gray to Bin --> Bin to Gray')
             self._valUpdate = myoperator.bin2gray(myoperator.opening(X2))
-        elif _operator == 'Closing':        # 闭操作
+        elif _operator == 'Closing':  # 闭操作
             X2 = myoperator.gray2bin(X)
             print('Gray to Bin --> Bin to Gray')
             self._valUpdate = myoperator.bin2gray(myoperator.closing(X2))
-        elif _operator == 'EdgeExtraction': # 边界提取
+        elif _operator == 'EdgeExtraction':  # 边界提取
             X2 = myoperator.gray2bin(X)
             print('Gray to Bin --> Bin to Gray')
             self._valUpdate = myoperator.bin2gray(myoperator.edge_extraction(X2))
-        else:                               # 不转换 或者 使用没定义算子
+        else:  # 不转换 或者 使用没定义算子
             self._valUpdate = X
 
         # 如果考虑滑动条阈值, 二值图像
-        if _thVal:      # 阈值
+        if _thVal:  # 阈值
             s = 0.1 * _thVal
-            gradientAvg = np.mean(s * self._valUpdate)      # 梯度均值
+            gradientAvg = np.mean(s * self._valUpdate)  # 梯度均值
             self._valUpdate[self._valUpdate < gradientAvg] = 1
             self._valUpdate[self._valUpdate >= gradientAvg] = 0
 
         # 写入磁盘和显示图片
         self._write_new_image(self._valUpdate)
-
 
     def _write_new_image(self, X, filename='image/tmp-update.png'):
 
@@ -174,7 +173,6 @@ class MainWidget(tk.Frame):
         thVal = int(thVal)
         self.update_image(_operator=self._nowOperator, _thVal=thVal)
 
-
     def show_hist(self, filename='image/tmp-hist.png'):
         """生成原图像的直方图图片，写入磁盘，显示图片"""
         # 获得灰度值
@@ -185,11 +183,26 @@ class MainWidget(tk.Frame):
 
         # 展示图片
         imageSize = (self._imageSize[0] // 100, self._imageSize[1] // 100)
-        fig, axe = plt.subplots(figsize=imageSize)       # 默认返回一个子图
+        fig, axe = plt.subplots(figsize=imageSize)  # 默认返回一个子图
         axe.plot(range(len(hist)), hist)
         axe.set_xlabel('Gray value')
         axe.set_ylabel('Proportion')
         fig.savefig(filename, dpi=100)
         self._newImage.config(file=filename)
 
+    def show_humoments(self, filename='image/tmp-humoments.png'):
+        """生成原图像的Hu矩直方图图片，写入磁盘，显示图片"""
+        # 生成不变矩列表
+        X = myoperator.color2gray(self._valImage)
+        log_ims = np.log(myoperator.humoments(X, id='all'))
+        print('ims:', log_ims)
 
+        # 展示图片
+        imageSize = (self._imageSize[0] // 100, self._imageSize[1] // 100)
+        fig, axe = plt.subplots(figsize=imageSize)  # 默认返回一个子图
+        xrange = range(1, len(log_ims) + 1)
+        axe.bar(xrange, log_ims, tick_label=xrange)
+        axe.set_xlabel('eta')
+        axe.set_ylabel('log-val')
+        fig.savefig(filename, dpi=100)
+        self._newImage.config(file=filename)
