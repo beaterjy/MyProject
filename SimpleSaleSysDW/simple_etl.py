@@ -28,7 +28,9 @@ class SimpleETL(object):
         for item in items:
             order_id, prod, class_name, customer, area, created_time, total_cost = item
             # area key
-            area_key = self._get_update_dim_key(DIM_AREA, area_name=area)
+            # 地区修正为省份，地区
+            prov, area_name = area.split('，')
+            area_key = self._get_update_dim_key(DIM_AREA, prov=prov, area_name=area_name)
             # prod key
             prod_key = self._get_update_dim_key(DIM_PROD, prod_name=prod, class_name=class_name)
             # date key
@@ -97,7 +99,7 @@ class SimpleETL(object):
             key = None
             if dim_table == DIM_AREA:
                 sql = "select * from dim_area where area = '%s'" % kwargs['area_name']
-                ins_sql = "insert into dim_area(area) values('%s')" % kwargs['area_name']
+                ins_sql = "insert into dim_area(prov, area) values('%s', '%s')" % (kwargs['prov'], kwargs['area_name'])
             elif dim_table == DIM_PROD:
                 sql = "select * from dim_prod where name = '%s' and class = '%s'" % (
                 kwargs['prod_name'], kwargs['class_name'])
