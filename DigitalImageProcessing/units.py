@@ -16,7 +16,7 @@ class MainWidget(tk.Frame):
 
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        self._imageSize = (300, 300)
+        self._imageSize = (400, 400)
         self._valImage = None
         self._valUpdate = None
         self._nowOperator = None  # 当前使用的算子为None，即原图的灰度值
@@ -192,17 +192,23 @@ class MainWidget(tk.Frame):
 
     def show_humoments(self, filename='image/tmp-humoments.png'):
         """生成原图像的Hu矩直方图图片，写入磁盘，显示图片"""
+
+        # cv2的HuMoments
+        # log_ims = np.log(np.abs(cv2.HuMoments(cv2.moments(myoperator.color2gray(self._valImage))))).ravel()
+        # print('log-cv2.HuMoments:', log_ims)
+
         # 生成不变矩列表
         X = myoperator.color2gray(self._valImage)
-        log_ims = np.log(myoperator.humoments(X, id='all'))
-        print('ims:', log_ims)
+        log_ims = np.log(np.abs(myoperator.humoments(X)))   # 先取绝对值，后取对数（不变矩可能为负数）
+        print('log-HuMoments:', log_ims)
 
         # 展示图片
         imageSize = (self._imageSize[0] // 100, self._imageSize[1] // 100)
         fig, axe = plt.subplots(figsize=imageSize)  # 默认返回一个子图
         xrange = range(1, len(log_ims) + 1)
         axe.bar(xrange, log_ims, tick_label=xrange)
-        axe.set_xlabel('eta')
+        axe.set_xlabel('Invariant Moments')
         axe.set_ylabel('log-val')
+        axe.set_title('Log - Seven Invariant Moments')
         fig.savefig(filename, dpi=100)
         self._newImage.config(file=filename)

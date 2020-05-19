@@ -286,29 +286,31 @@ def moment(X, p, q):
     """
     if p < 0 or q < 0:
         raise Exception('p or q must bigger than 0.')
-    Y = X.copy()
+    Y = X.copy().astype(np.float64)
+    tmp = 0
     for x in range(len(X)):
         for y in range(len(X[0])):
-            Y[x, y] = (x ** p) * (y ** q) * X[x, y]
+            Y[x, y] = X[x, y] * 1.0 * (x ** p) * (y ** q)
     return np.sum(Y)
 
 
 def center_moment(X, p, q):
     """
     中心矩 --> sumsum((x - xx)**p * (y - yy)**q * gray(x, y))
-    其中 xx = m(1, 0) / m(0, 0), xy = m(0, 1) / m(0, 0)
+    其中 xx = m(1, 0) / m(0, 0), yy = m(0, 1) / m(0, 0) 代表重心
     m(0, 0) --> 类似于质量
     """
     xx = moment(X, 1, 0) / moment(X, 0, 0)
     yy = moment(X, 0, 1) / moment(X, 0, 0)
     Y = X.copy()
+    tmp = 0
     for x in range(len(X)):
         for y in range(len(X[0])):
-            Y[x, y] = ((x - xx) ** p) * ((y - yy) ** q) * X[x, y]
+            Y[x, y] = X[x, y] * 1.0 * ((x - xx) ** p) * ((y - yy) ** q)
     return np.sum(Y)
 
 
-def humoments(X, id='all'):
+def humoments(X):
     """
     hu矩 = 不变矩(1 -- 7)
     """
@@ -349,21 +351,11 @@ def humoments(X, id='all'):
         (n30 + n12) * (n30 + n12) + (n21 + n03) * (n21 + n03),
         (n30 - 3 * n12) * (n30 + n12) * ((n30 + n12) * (n30 + n12) - 3 * (n21 + n03) * (n21 + n03)) + (3 * n21 - n03) * (n21 + n03) * (3 * (n30 + n12) * (n30 + n12) - (n21 + n03) * (n21 + n03)),
         (n20 - n02) * ((n30 + n12) * (n30 + n12) - (n21 + n03) * (n21 + n03)) + 4 * n11 * (n30 + n12) * (n21 + n03),
-        (3 * n21 - n03) * (n30 + n12) * ((n30 + n12) * (n30 + n12) - 3 * (n21 + n03) *(n21 + n03) ) + (3 * n12 - n30) * (n21 + n03) * (3 *(n30 + n12) *(n30 + n12) - (n21 + n03) * (n21 + n03)),
-    ]
+        (-1) * ((3 * n21 - n03) * (n30 + n12) * ((n30 + n12) * (n30 + n12) - 3 * (n21 + n03) *(n21 + n03) ) + (3 * n12 - n30) * (n21 + n03) * (3 *(n30 + n12) *(n30 + n12) - (n21 + n03) * (n21 + n03))),
+    ]   # 修正不变矩7 --> 乘以(-1)（根据cv2.HuMoments结果)
 
-    # 判断id
     res = []
-    if isinstance(id, str) and id == 'all':
-        for im in invariant_moment:
-            res.append(im)
-    elif isinstance(id, int) and 1 <= id <= 7:
-        res.append(invariant_moment[id])
-    elif isinstance(id, list):
-        for x in list:
-            if x < 1 or x > 7:
-                raise Exception('Id must in range(1, 8).')
-            else:
-                res.append(invariant_moment[x])
+    for im in invariant_moment:
+        res.append(im)
     return res
 
