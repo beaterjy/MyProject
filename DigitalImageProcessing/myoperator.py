@@ -4,6 +4,7 @@
 
 import numpy as np
 import math
+import cv2
 
 _L_DEFAULT = 256
 
@@ -359,3 +360,60 @@ def humoments(X):
         res.append(im)
     return res
 
+def object_spot(X, X_spot, incr=10):
+    """
+    对象识别函数，在主图片中识别其中的小部件
+    提取特征：7个不变矩
+    损失函数：欧氏距离
+    :param X: 主图像
+    :param X_spot: 需要搜索对象
+    :param incr: 边长增量
+    :return: 最小损失，坐标点，边长
+    """
+    # 欧式距离作为损失
+    def get_loss(X, Y):
+        return np.linalg.norm(X - Y)
+
+    # 一些参数
+    max_row, max_col = X.shape  # 主图片长和宽
+    start_side = max(X_spot.shape) // 10  # 搜索边长
+    n_case = (min(max_row, max_col) - start_side) // incr + 1  # 总共改变边长次数
+    losses = np.zeros(n_case)  # 每搜索边长的最小损失
+    min_loc = []  # 对应的坐标
+
+    # 小部件
+    hu_spot = cv2.HuMoments(cv2.moments(color2gray(X_spot))).ravel()
+
+    # 外循环
+    for t in range(n_case):
+        # 生成边长和内循环次数
+        side = start_side + t * incr
+        n_row, n_col = max_row - side + 1, max_col - side + 1
+
+        # 初始化最小损失
+        min_loss = get_loss(cv2.HuMoments(cv2.moments(X[0:side, 0:side])).ravel(), hu_spot)
+        loc = (0, 0)
+
+        # 寻找最小的损失坐标
+        for x in range(n_row):
+            for y in range(n_col):
+                tmpX = X[x:x+side, y:y+side]
+                hu_tmpX = cv2.HuMoments(cv2.moments(tmpX)).ravel()
+                tmp_loss = get_loss(hu_tmpX, hu_spot)
+                if tmp_loss < min_loss:
+                    min_loss = tmp_loss
+                    loc = (x, y)
+
+        # 记录当前边长的损失
+        losses[t] = min_loss
+        min_loc.append(loc)
+
+    # 返回最小损失，坐标，边长
+    return np.min(losses), min_loc[np.argmin(losses)], np.argmin(losses) * incr + side
+
+def reverse(X, L=_L_DEFAULT):
+    """取反"""
+    Y = X.copy()
+    L_matrix = np.ones_like(Y) * (L - 1)
+    L_matrix.astype(np.int32)
+    return L_matrix - Y

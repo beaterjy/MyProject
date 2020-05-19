@@ -25,8 +25,9 @@ class MyWindow():
         menuHist = tk.Menu(self.menu, tearoff=True)
         menuEdge = tk.Menu(self.menu, tearoff=True)
         menuCut = tk.Menu(self.menu, tearoff=True)
-        menuBin= tk.Menu(self.menu, tearoff=True)
+        menuBin = tk.Menu(self.menu, tearoff=True)
         menuExpr = tk.Menu(self.menu, tearoff=True)
+        menuSpot = tk.Menu(self.menu, tearoff=True)
 
         # 绑定菜单名字
         self.menu.add_cascade(label='图像文件操作', menu=menuFile)
@@ -35,6 +36,7 @@ class MyWindow():
         self.menu.add_cascade(label='图像阈值分割', menu=menuCut)
         self.menu.add_cascade(label='图像形态学', menu=menuBin)
         self.menu.add_cascade(label='图像表示描述', menu=menuExpr)
+        self.menu.add_cascade(label='图像对象识别', menu=menuSpot)
 
         # 添加菜单内容
         # 文件操作
@@ -43,36 +45,37 @@ class MyWindow():
         menuFile.add_command(label='保存', command=None)
         menuFile.add_command(label='另存为', command=None)
         # 直方图
-        menuHist.add_command(label='彩色转灰度图像', command=lambda : self._update('Gray'))
-        menuHist.add_command(label='图像二值化处理', command=lambda : self._update('Gray2Bin'))
+        menuHist.add_command(label='彩色转灰度图像', command=lambda: self._update('Gray'))
+        menuHist.add_command(label='图像二值化处理', command=lambda: self._update('Gray2Bin'))
         menuHist.add_command(label='计算直方图', command=self._show_hist)
-        menuHist.add_command(label='直方图均衡化', command=lambda : self._update('HistEqual'))
+        menuHist.add_command(label='直方图均衡化', command=lambda: self._update('HistEqual'))
         # 边缘检测
         menuEdge.add_command(label='Sobel算子', command=lambda: self._update('Sobel'))
         menuEdge.add_command(label='Prewitt算子', command=lambda: self._update('Prewitt'))
-        menuEdge.add_command(label='Canny算子', command=lambda : self._update(None))
-        menuEdge.add_command(label='Laplace算子', command=lambda : self._update('Laplace'))
+        menuEdge.add_command(label='Canny算子', command=lambda: self._update(None))
+        menuEdge.add_command(label='Laplace算子', command=lambda: self._update('Laplace'))
         # 阈值分割
-        menuCut.add_command(label='双峰法平均阈值分割', command=lambda : self._update('BimodeMean'))
-        menuCut.add_command(label='双峰法最小阈值分割', command=lambda : self._update('BimodeLow'))
+        menuCut.add_command(label='双峰法平均阈值分割', command=lambda: self._update('BimodeMean'))
+        menuCut.add_command(label='双峰法最小阈值分割', command=lambda: self._update('BimodeLow'))
         menuCut.add_command(label='局部阈值分割', command=None)
         menuCut.add_command(label='裂合4叉树分割', command=None)
         menuCut.add_command(label='区域扩展分割', command=None)
         # 形态学（二值）
-        menuBin.add_command(label='膨胀', command=lambda : self._update('Dilation'))
-        menuBin.add_command(label='腐蚀', command=lambda : self._update('Frosion'))
-        menuBin.add_command(label='开操作', command=lambda : self._update('Opening'))
-        menuBin.add_command(label='闭操作', command=lambda : self._update('Closing'))
+        menuBin.add_command(label='膨胀', command=lambda: self._update('Dilation'))
+        menuBin.add_command(label='腐蚀', command=lambda: self._update('Frosion'))
+        menuBin.add_command(label='开操作', command=lambda: self._update('Opening'))
+        menuBin.add_command(label='闭操作', command=lambda: self._update('Closing'))
         menuBin.add_command(label='击中变换', command=None)
-        menuBin.add_command(label='边界提取', command=lambda : self._update('EdgeExtraction'))
+        menuBin.add_command(label='边界提取', command=lambda: self._update('EdgeExtraction'))
         # 表示描述
         menuExpr.add_command(label='区域hu矩', command=self._show_humoments)
-
+        # 图像识别
+        menuSpot.add_command(label='对象识别', command=lambda: self._update('ObjectSpot'))
 
     def _update(self, _operator):
         """统一更新方法"""
         self.widget.update_image(_operator=_operator)
-        print('Update Done -- %s.' % (_operator))
+        print('Update Done -- %s.' % _operator)
 
     def _show_hist(self):
         """展示直方图"""
@@ -81,7 +84,6 @@ class MyWindow():
     def _show_humoments(self):
         """展示Hu矩直方图"""
         self.widget.show_humoments()
-
 
 
 if __name__ == '__main__':

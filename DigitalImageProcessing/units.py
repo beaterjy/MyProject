@@ -18,6 +18,7 @@ class MainWidget(tk.Frame):
         tk.Frame.__init__(self, master)
         self._imageSize = (400, 400)
         self._valImage = None
+        self._valCompare = None
         self._valUpdate = None
         self._nowOperator = None  # 当前使用的算子为None，即原图的灰度值
         self._valS = tk.IntVar()
@@ -50,8 +51,10 @@ class MainWidget(tk.Frame):
 
         # 功能按键
         self._frmBtn = tk.Frame(self._frmL)
-        btnMess = ['选择图片', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮']
-        btnFunc = [self.open_file, None, None, None, None, None, None, None, None]  # 功能方法名
+        btnMess = ['选择图片', '对比图片', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮', '备用按钮']
+        btnFunc = [self.open_file, self.open_compare, None,
+                   None, None, None,
+                   None, None, None]  # 功能方法名
         btns = [tk.Button(self._frmBtn, text=btnMess[idx], padx=10, command=btnFunc[idx])
                 for idx, _ in enumerate(btnMess)]
         rows, cols = 3, 3
@@ -95,6 +98,20 @@ class MainWidget(tk.Frame):
 
         # 显示原始图片
         self._image.config(file=tmpFilename)
+
+    def open_compare(self):
+        """打开对比文件，导入图片"""
+        filename = filedialog.askopenfilename(title='打开对比文件', initialdir='image',
+                                              filetypes=[('jpg文件', '*.jpg'), ('png文件', '*.png')])
+        if len(filename) == 0:  # 如果直接关闭，返回''
+            print('Open file Error.')
+            return
+        self._valCompare = cv2.imread(filename, cv2.IMREAD_GRAYSCALE | cv2.IMREAD_COLOR)  # 读出的图片值
+        print('Compare Image:', self._valCompare.shape)  # 打印shape
+
+        # 写暂时文件tmp-compare.png
+        tmpFilename = 'image/tmp-compare.png'
+        cv2.imwrite(tmpFilename, cv2.resize(self._valCompare, self._imageSize))
 
     def update_image(self, _operator=None, _thVal=None):
         """
@@ -146,6 +163,14 @@ class MainWidget(tk.Frame):
             X2 = myoperator.gray2bin(X)
             print('Gray to Bin --> Bin to Gray')
             self._valUpdate = myoperator.bin2gray(myoperator.edge_extraction(X2))
+        elif _operator == 'ObjectSpot':  # 对象识别
+            if self._valCompare is None:
+                raise Exception('Please select compare image.')
+            X_spot = myoperator.color2gray(self._valCompare)
+            loss, (xx, yy), side = myoperator.object_spot(X, X_spot, incr=10)
+            self._valUpdate = self._valImage
+            self._valUpdate[xx:xx+side, yy:yy+side] = myoperator.reverse(self._valUpdate[xx:xx+side, yy:yy+side])
+            print('loss:', loss)
         else:  # 不转换 或者 使用没定义算子
             self._valUpdate = X
 
@@ -199,7 +224,7 @@ class MainWidget(tk.Frame):
 
         # 生成不变矩列表
         X = myoperator.color2gray(self._valImage)
-        log_ims = np.log(np.abs(myoperator.humoments(X)))   # 先取绝对值，后取对数（不变矩可能为负数）
+        log_ims = np.log(np.abs(myoperator.humoments(X)))  # 先取绝对值，后取对数（不变矩可能为负数）
         print('log-HuMoments:', log_ims)
 
         # 展示图片
@@ -209,6 +234,13 @@ class MainWidget(tk.Frame):
         axe.bar(xrange, log_ims, tick_label=xrange)
         axe.set_xlabel('Invariant Moments')
         axe.set_ylabel('log-val')
-        axe.set_title('Log - Seven Invariant Moments')
+        axe.set_title('Log - HuMoments')
         fig.savefig(filename, dpi=100)
         self._newImage.config(file=filename)
+
+
+
+
+
+
+
