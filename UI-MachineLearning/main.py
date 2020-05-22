@@ -7,6 +7,7 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from bayesWidget import BayesWidget
+from bp_widget import BPWidget
 
 
 
@@ -144,5 +145,5 @@ if __name__ == '__main__':
     # window.config(menu=menu)
     # window.mainloop()
     window = tk.Tk()
-    root = BayesWidget().pack()
+    root = BPWidget()
     window.mainloop()
