@@ -171,6 +171,16 @@ class MainWidget(tk.Frame):
             self._valUpdate = self._valImage
             self._valUpdate[xx:xx+side, yy:yy+side] = myoperator.reverse(self._valUpdate[xx:xx+side, yy:yy+side])
             print('loss:', loss)
+        elif _operator == 'SSDA':       # SSDA序贯相似度检测
+            if self._valCompare is None:
+                raise Exception('Please select compare image.')
+            X_spot = myoperator.color2gray(self._valCompare)
+            max_count, xx, yy = myoperator.ssda(X, X_spot, threshold=1)
+            self._valUpdate = self._valImage
+            xside, yside = X_spot.shape
+            self._valUpdate[xx:xx+xside, yy:yy+yside] = myoperator.reverse(self._valUpdate[xx:xx+xside, yy:yy+yside])
+            print('max_count:', max_count)
+
         else:  # 不转换 或者 使用没定义算子
             self._valUpdate = X
 

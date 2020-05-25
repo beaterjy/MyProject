@@ -411,6 +411,59 @@ def object_spot(X, X_spot, incr=10):
     # 返回最小损失，坐标，边长
     return np.min(losses), min_loc[np.argmin(losses)], np.argmin(losses) * incr + side
 
+
+def ssda(X, X_spot, threshold):
+    """
+    序贯相似性检测（SSDA）
+    实现检测子图，暂不能实现大小、方向不相同的子图
+    :param X: 要进行匹配的原图片灰度值
+    :param X_spot: 要识别的图片灰度值
+    :param threshold: 不变阈值
+    :return: 匹配的坐标
+    """
+    # S为原图像，T为要识别图像
+    S, T = X.copy(), X_spot.copy()
+    I = np.zeros_like(S)    # 最终的SSDA检测曲面矩阵
+    if T.shape > S.shape:
+        raise Exception('X_spot must smaller than X.')
+
+    if threshold <= 0:
+        raise Exception('Threshold must bigger than 0.')
+
+    rows = S.shape[0] - T.shape[0]
+    cols = S.shape[1] - T.shape[1]
+    size = T.shape
+    xs, ys = np.arange(size[0]), np.arange(size[1])
+    T_mean = np.mean(T)
+    for r in range(rows):
+        for c in range(cols):
+            # 从原图片中抽出子图
+            sub = S[r:r+size[0], c:c+size[1]]
+            sub_mean = np.mean(sub)
+
+            # 误差矩阵, 因为阈值很小就可以识别，所以改用循环实现
+            # E = np.abs(sub - sub_mean - T + T_mean)
+            error = 0   # 累计误差
+
+            # 随机选取点，填充检测曲面I
+            np.random.shuffle(xs)
+            np.random.shuffle(ys)
+            count = 0
+            for i in range(len(xs)):
+                x, y = xs[i], ys[i]
+                error += abs(sub[x, y] - sub_mean - T[x, y] + T_mean)
+                count += 1
+                if error >= threshold:
+                    break
+            # 记录(r, c)点的检测曲面值
+            I[r, c] = count
+
+    # 返回检测曲面上最大点的值，以及坐标
+    max_count = np.max(I)
+    return max_count, np.argmax(I) // S.shape[1], np.argmax(I) % S.shape[1]
+
+
+
 def reverse(X, L=_L_DEFAULT):
     """取反"""
     Y = X.copy()

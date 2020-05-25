@@ -71,6 +71,7 @@ class MyWindow():
         menuExpr.add_command(label='区域hu矩', command=self._show_humoments)
         # 图像识别
         menuSpot.add_command(label='对象识别', command=lambda: self._update('ObjectSpot'))
+        menuSpot.add_command(label='SSDA', command=lambda: self._update('SSDA'))
 
     def _update(self, _operator):
         """统一更新方法"""
